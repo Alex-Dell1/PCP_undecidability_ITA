@@ -1,0 +1,657 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+\newenvironment<>{proofs}[1][\proofname]{%
+    \par
+    \def\insertproofname{#1\@{.}}%
+    \usebeamertemplate{proof begin}#2}
+  {\usebeamertemplate{proof end}}
+\newenvironment<>{proofc}{%
+  \setbeamertemplate{proof begin}{\begin{block}{}}
+    \par
+    \usebeamertemplate{proof begin}}
+  {\usebeamertemplate{proof end}}
+\newenvironment<>{proofe}{%
+    \par
+    \pushQED{\qed}
+    \setbeamertemplate{proof begin}{\begin{block}{}}
+    \usebeamertemplate{proof begin}}
+  {\popQED\usebeamertemplate{proof end}}
+\setcounter{MaxMatrixCols}{20}
+
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{amsmath}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Indecidibilità di PCP]{Indecidibilità di PCP} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Alex Della Schiava} % Your name
+\institute[uniud] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Università degli Studi di Udine - Logica per l'Informatica\\ % Your institution for the title page
+\medskip % Your email address
+}
+\date{1 Dicembre 2021} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Idea della dimostrazione} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Idea della dimostrazione}
+\begin{itemize}
+\item La dimostrazione avviene sfruttando il concetto di \textbf{riduzione}.
+\item Si assuma per assurdo che un problema \(A\) sia \emph{decidibile}
+\item Riducendo un problema indecidibile \(B\) ad un problema \(A\) si dimostra l'indecidibilità di \(A\) per contraddizione.
+\item Più specificatamente: Soluzione per \(A \Rightarrow \) Soluzione per \(B\)
+\item Per dimostrare l'indecidibilità di PCP, tale metodo viene utilizzato due volte:
+\end{itemize}
+\begin{equation*}
+    Acceptance < MPCP < PCP
+\end{equation*}
+\end{frame}
+
+%------------------------------------------------
+\section{Perché usare MPCP}
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Reminder: Cos'era PCP (Post Correspondence Problem)?}
+\begin{definition}[PCP]
+    
+\begin{itemize}
+\item Alfabeto \(\Sigma\)
+\item Un insieme \textbf{finito} di tessere \(\mathnormal{T}\) della forma:\(
+    \begin{pmatrix}
+        \Sigma^*\\
+        \Sigma^*
+    \end{pmatrix}
+    \),\\e.g. \(\mathnormal{T}=
+    \begin{Bmatrix}
+        \begin{pmatrix}
+        a & b\\
+        b
+        \end{pmatrix},
+        \begin{pmatrix}
+        a \\
+        a
+        \end{pmatrix},
+        \begin{pmatrix}
+        d \\
+        d & a
+        \end{pmatrix}
+    \end{Bmatrix}
+    \)
+\item \`E possibile trovare una \textbf{sequenza finita} di tessere tale che le due stringhe date dalla concatenazione delle stringhe in \textcolor{cyan}{alto} e in \textcolor{orange}{basso} delle tessere coincidano?\\[0.2cm]
+e.g.
+\(
+    \begin{Bmatrix}
+    \begin{pmatrix}
+    \textcolor{cyan}{d} \\
+    \textcolor{orange}{d} & \textcolor{orange}{a}
+    \end{pmatrix},
+    \begin{pmatrix}
+        \textcolor{cyan}{a} & \textcolor{cyan}{b}\\
+        \textcolor{orange}{b}
+    \end{pmatrix}
+\end{Bmatrix}\)
+\item Tale risultato è chiamato \textbf{corrispondenza}.
+\item \(PCP=\{\langle \mathnormal{T} \rangle: \text{esiste una corrispondenza in } \mathnormal{T}\}\)
+\end{itemize}
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Perché utilizzare MPCP?}
+\begin{itemize}
+\item Si prova in seguito a ridurre direttamente \(Acc\) a PCP (senza la transizione per MPCP).
+\item Per fare ciò è necessario mappare un input del problema \(Acc\) in un input di PCP.
+\item Più dettagliatamente: Trovare un insieme di tessere \(\mathnormal{T}\) tale che se esiste una \textbf{corrispondenza} in \(\mathnormal{T}\) allora \textbf{\(\mathnormal{M}\) accetta \(\mathnormal{w}\)}. 
+\item \textbf{Idea:} Data la codifica \(\langle \mathnormal{M,w}\rangle\) si costruisca un insieme \(\mathnormal{T}_{\mathnormal{M,w}}\) di tessere in maniera tale che descrivano tutte le possibili configurazioni tramite cui \(\mathnormal{M}\) accetta \(\mathnormal{w}\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Perché utilizzare MPCP?}
+    \begin{itemize}
+        \item Supponendo quindi che la computazione \(\mathnormal{M(w)}\) passi per le seguenti configurazioni: \(C_1, C_2, ..., C_k\).
+        \item Sarà possibile definire l'insieme di tessere:\\[0.2cm]\(\mathnormal{T}_{\mathnormal{M,w}}=
+            \begin{Bmatrix}
+                \begin{pmatrix}
+                    \texttt{\#} \\
+                    \texttt{\#} & C_1
+                \end{pmatrix},
+                \begin{pmatrix}
+                    C_i & \texttt{\#}\\
+                    \texttt{\#} & C_{i+1}
+                \end{pmatrix},
+                \begin{pmatrix}
+                    C_k & \texttt{\#}\\
+                    \texttt{\#}
+                \end{pmatrix}
+        \end{Bmatrix}
+        \)
+        \item Si può notare che l'unica \textbf{corrispondenza} possibile è:
+        \(\begin{matrix}
+            \texttt{\#} & C_1 & \texttt{\#} & C_2 & \texttt{\#} & ... & \texttt{\#} & C_k & \texttt{\#}\\
+            \texttt{\#} & C_1 & \texttt{\#} & C_2 & \texttt{\#} & ... & \texttt{\#} & C_k & \texttt{\#}
+        \end{matrix}\)
+        \item Dove \(C_1\) è la configurazione iniziale di \(\mathnormal{M}\) e \(C_k\) la configurazione con stato di accettazione \texttt{yes}.
+    \end{itemize}  
+\end{frame}
+
+\begin{frame}
+    \begin{itemize} 
+    \item \textcolor{red}{Problema:} \(\mathnormal{T}_{\mathnormal{M,w}}\) è effettivamente un insieme \textcolor{red}{finito}?
+    \item \textbf{No}, per descrivere tutte le possibili configurazioni (a priori) di una MdT dovremmo tenere in considerazione delle infinite posizioni presenti sul suo infinito nastro.
+    \end{itemize}
+    \begin{block}{Idea}
+        Si definiscano l'insieme di tessere \(\mathnormal{T}\) in maniera tale da rappresentare \textbf{frammenti di configurazione}. In particolare, si definiscano i seguenti 7 tipi di tessere differenti.
+    \end{block}
+    \begin{block}{Tipo 1}
+        \begin{itemize}
+            \item Le tessere Tipo 1 rappresentano completamente la configurazione iniziale di \(\mathnormal{M}\) su input \(\mathnormal{w}\). 
+        
+                \begin{equation*}
+                    \begin{pmatrix}
+                        \texttt{\#}\\
+                        \texttt{\#} \mathnormal{q_0 w_1 w_2 ... w_n} \texttt{\#}
+                    \end{pmatrix}
+                \end{equation*}
+            \item dove \(\mathnormal{w = w_1w_2...w_n}\) e \(\mathnormal{q_0}\) stato iniziale di \(\mathnormal{M}\)
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Perché utilizzare MPCP?}
+        \begin{block}{Tipo 2}
+            \begin{itemize}
+                \item Simula ogni possibile transizione verso destra definita dalla funzione di transizione \(\delta\) di \(\mathnormal{M}\).
+                \item Quindi, \(\forall q,q' \in Q \text{ e } \forall a,b \in \Gamma\) tali che \(\delta(q,a)=(q',b,\rightarrow )\):
+                \\
+                (\(\mathnormal{u} \text{ } q a \text{ } \mathnormal{v} \xrightarrow{\delta} \mathnormal{u} \text{ } bq' \text{ } \mathnormal{v}\)):
+                    \(
+                    \begin{pmatrix}
+                        q & a\\
+                        b & q'
+                    \end{pmatrix}
+                \)
+            \end{itemize}
+        \end{block}
+        \begin{block}{Tipo 3}
+        \begin{itemize}
+            \item Analogo a Tipo 2 ma per transizioni verso sinistra.
+            \item Quindi, \(\forall q,q' \in Q \text{ e } \forall a,b,c \in \Gamma\) tali che \(\delta(q,a)=(q',b,\leftarrow )\):
+            \\
+            (\(\mathnormal{u} \text{ } cq a \text{ } \mathnormal{v} \xrightarrow{\delta} \mathnormal{u} \text{ } q'cb \text{ } \mathnormal{v}\)):
+                \(
+                \begin{pmatrix}
+                    c & q & a\\
+                    q' & c & b
+                \end{pmatrix}
+            \)
+        \end{itemize}
+    \end{block}
+    (Con \(\Gamma\) alfabeto del nastro di \(\mathnormal{M}\))
+\end{frame}
+
+\begin{frame}
+    \frametitle{Perché utilizzare MPCP?}
+    \begin{block}{Tipo 4}
+        \begin{itemize}
+            \item Caratteri non variati dalla transizione.
+            \item \(\forall a \in \Gamma\):
+            \(
+                \begin{pmatrix}
+                    a\\
+                    a 
+                \end{pmatrix}
+            \)
+            \item Le tessere Tipo 4 serviranno a specificare tutti i caratteri che dopo una transizione rimarranno invariati.
+        \end{itemize}
+    \end{block}
+    \begin{block}{Tipo 5}
+        \begin{itemize}
+            \item Separatori di configurazione.
+            \(
+                \begin{pmatrix}
+                    \texttt{\#}\\
+                    \texttt{\#}
+                \end{pmatrix}
+                \begin{pmatrix}
+                    \texttt{\#}\\
+                    \sqcup \texttt{\#}
+                \end{pmatrix}
+            \)
+            \item La seconda matrice Tipo 5 permette di generalizzare al caso in cui una configurazione della MdT \(\mathnormal{M}\) si espanda lungo il nastro.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Perché utilizzare MPCP?}
+    \begin{block}{Tipo 6}
+        \begin{itemize}
+            \item Riportare le due stringhe in pari.
+            \item \(\forall a \in \Gamma\):
+            \(
+                \begin{pmatrix}
+                    a \texttt{ yes}\\
+                    \texttt{yes}
+                \end{pmatrix}
+                \begin{pmatrix}
+                    \texttt{yes } a\\
+                    \texttt{yes}
+                \end{pmatrix}
+            \)
+            \item Si noti come la stringa in basso "perda" una lettera ogni volta che una tessera Tipo 6 viene utilizzata.
+            \item Una volta terminata la computazione, la stringa in alto presenta almeno \(n+2\) lettere in meno \(n = |w|\).
+            \item Le tessere Tipo 6 permettono di sistemare tale deficit.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Perché utilizzare MPCP?}
+    \begin{block}{Tipo 7}
+        \begin{itemize}
+            \item Conclusione della corrispondenza:\\
+            \(
+                \begin{pmatrix}
+                    \texttt{yes } \texttt{\#} \text{ } \texttt{\#}\\
+                    \texttt{\#}
+                \end{pmatrix}
+            \)
+            \item Tipo 7 verrà utilizzata esattamente una singola volta: quando la situazione delle due stringhe sarà del tipo:
+            \(
+                \begin{pmatrix}
+                    \texttt{\texttt{\#}} & \textcolor{red}{\texttt{yes}} & \textcolor{red}{\texttt{\#}} & \textcolor{red}{\texttt{\#}} \\
+                    \texttt{\#} & \texttt{\texttt{yes}} & \texttt{\#} & \textcolor{red}{\texttt{\#}}
+                \end{pmatrix}
+            \)
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Perché utilizzare MPCP?}
+    \begin{itemize}
+        \item \(\mathnormal{T}\) è ora un insieme \textbf{finito}. Più precisamente la sua cardinalità dipende dall'alfabeto del nastro \(\Gamma\) e dalla funzione di transizione di \(\mathnormal{M}\): \(\delta\).
+        \item \textcolor{red}{Problema:} è possibile utilizzare sole tessere Tipo 4 per ottenere una corrispondenza.
+    \end{itemize}
+    \begin{example}
+        La seguente sequenza di tessere è a tutti gli effetti una \textbf{corrispondenza}.
+        \begin{equation*}
+            \begin{pmatrix}
+                \mathnormal{a}\\
+                \mathnormal{a}
+            \end{pmatrix}
+            \begin{pmatrix}
+                \mathnormal{b}\\
+                \mathnormal{b}
+            \end{pmatrix}
+            \begin{pmatrix}
+                \mathnormal{c}\\
+                \mathnormal{c}
+            \end{pmatrix}
+            \begin{pmatrix}
+                \mathnormal{d}\\
+                \mathnormal{d}
+            \end{pmatrix}
+        \end{equation*}
+    \end{example}
+\end{frame}
+
+%------------------------------------------------
+\section{Indecidibilità MPCP}
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{MPCP}
+\begin{definition}[Modified PCP]
+    \begin{itemize}
+        \item Il problema di MPCP contiene una sola piccola modifica: viene fissata la tessera iniziale \(t\).
+        \item \(MPCP=\{\langle \mathnormal{T,t}\rangle: \text{esiste una corrispondenza in \(\mathnormal{T}\) dove la tessera iniziale è }t\}\)
+    \end{itemize}
+\end{definition}
+\end{frame}
+
+
+
+%------------------------------------------------
+
+\setbeamercovered{transparent}
+
+\begin{frame}
+    \frametitle{Indecidibilità di MPCP}
+    \begin{example}
+        \begin{itemize}
+            \item Si consideri \(\mathnormal{M}\) MdT che accetta tutte e sole le stringhe con soli simboli \texttt{1} su input \(\mathnormal{w}=\texttt{11}\).
+            \begin{equation*}
+                \text{Dove }\delta=
+                \begin{cases}
+                \delta(\mathnormal{q_0},\texttt{0})=(\texttt{no},\texttt{0},\rightarrow )\\
+                \delta(\mathnormal{q_0},\texttt{1})=(\mathnormal{q_0},\texttt{1},\rightarrow )\\ 
+                \delta(\mathnormal{q_0},\sqcup)=(\texttt{yes},\sqcup,\leftarrow )
+                \end{cases}
+            \end{equation*}\\
+            \onslide<2->
+            \begin{center}
+                
+            \(
+            \begin{matrix}
+                \textcolor{teal}{\texttt{\#}} \onslide<3-> & \textcolor{orange}{q_0} & \textcolor{orange}{\texttt{1}} \onslide<4-> & \textcolor{blue}{\texttt{1}} \onslide<5-> & \texttt{\#} \onslide<6-> & \textcolor{blue}{\texttt{1}} & \onslide<7-> \textcolor{orange}{q_0} & \textcolor{orange}{\texttt{1}} & \onslide<8-> \texttt{\#} & \onslide<9-> \textcolor{blue}{\texttt{1}} \\
+                \onslide<2-> \textcolor{teal}{\texttt{\#}} & \textcolor{teal}{q_0} & \textcolor{teal}{\texttt{1}} & \textcolor{teal}{\texttt{1}} & \textcolor{teal}{\texttt{\#}} \onslide<3-> & \textcolor{orange}{\texttt{1}} & \textcolor{orange}{q_0} \onslide<4-> & \textcolor{blue}{\texttt{1}} \onslide<5-> & \texttt{\#} \onslide<6-> & \textcolor{blue}{\texttt{1}} \onslide<7-> & \textcolor{orange}{\texttt{1}} & \textcolor{orange}{q_0} & \onslide<8-> \sqcup & \texttt{\#} \onslide<9-> & \textcolor{blue}{\texttt{1}}
+            \end{matrix}\)
+        \end{center}
+        \end{itemize}
+    \end{example}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Indecidibilità di MPCP}
+    \begin{example}
+        \begin{itemize}
+            \item Si consideri \(\mathnormal{M}\) MdT che accetta tutte e sole le stringhe con soli simboli \texttt{1} su input \(\mathnormal{w}=\texttt{11}\).
+            \begin{equation*}
+                \text{Dove }\delta=
+                \begin{cases}
+                \delta(\mathnormal{q_0},\texttt{0})=(\texttt{no},\texttt{0},\rightarrow )\\
+                \delta(\mathnormal{q_0},\texttt{1})=(\mathnormal{q_0},\texttt{1},\rightarrow )\\ 
+                \delta(\mathnormal{q_0},\sqcup)=(\texttt{yes},\sqcup,\leftarrow )
+                \end{cases}
+            \end{equation*}\\
+            \onslide<1->
+            \begin{center}
+                
+            \(
+            \begin{matrix}
+                \texttt{\#}  \onslide<2-> \textcolor{blue}{\texttt{1}} \onslide<3-> & \textcolor{magenta}{\texttt{1}} & \textcolor{magenta}{q_0} & \textcolor{magenta}{\sqcup} \onslide<4-> & \texttt{\#} \onslide<5-> & \textcolor{blue}{\texttt{1}} & \onslide<6-> \textcolor{red}{\texttt{yes}} & \textcolor{red}{\texttt{1}} \onslide<7-> & \textcolor{blue}{\sqcup} & \onslide<8-> \texttt{\#}\\
+                \onslide<1-> \texttt{\#}  \textcolor{blue}{\texttt{1}} & \textcolor{orange}{\texttt{1}} & \textcolor{orange}{q_0} & \sqcup & \texttt{\#} \onslide<2-> & \textcolor{blue}{\texttt{1}} & \onslide<3-> \textcolor{magenta}{\texttt{yes}} & \textcolor{magenta}{\texttt{1}} & \textcolor{magenta}{\sqcup} \onslide<4-> & \texttt{\#} \onslide<5-> & \textcolor{blue}{\texttt{1}} & \onslide<6-> \textcolor{red}{\texttt{yes}}  \onslide<7-> & \textcolor{blue}{\sqcup} & \onslide<8-> \texttt{\#}
+            \end{matrix}\)
+        \end{center}
+        \end{itemize}
+    \end{example}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Indecidibilità di MPCP}
+    \begin{example}
+        \begin{itemize}
+            \item Si consideri \(\mathnormal{M}\) MdT che accetta tutte e sole le stringhe con soli simboli \texttt{1} su input \(\mathnormal{w}=\texttt{11}\).
+            \begin{equation*}
+                \text{Dove }\delta=
+                \begin{cases}
+                \delta(\mathnormal{q_0},\texttt{0})=(\texttt{no},\texttt{0},\rightarrow )\\
+                \delta(\mathnormal{q_0},\texttt{1})=(\mathnormal{q_0},\texttt{1},\rightarrow )\\ 
+                \delta(\mathnormal{q_0},\sqcup)=(\texttt{yes},\sqcup,\leftarrow )
+                \end{cases}
+            \end{equation*}\\
+            \onslide<1->
+            \begin{center}
+                
+            \(
+            \begin{matrix}
+                \texttt{\#} & \onslide<2-> \textcolor{blue}{\texttt{1}} & \onslide<3-> \textcolor{red}{\texttt{yes}} & \textcolor{red}{\sqcup} & \onslide<4-> \texttt{\#} & \onslide<5-> \textcolor{red}{\texttt{1}} & \textcolor{red}{\texttt{yes}} & \onslide<6-> \texttt{\#} \onslide<7-> & \textcolor{teal}{\texttt{yes}} & \textcolor{teal}{\texttt{\#}} & \textcolor{teal}{\texttt{\#}}\\
+                \onslide<1-> \texttt{\#} & \textcolor{blue}{\texttt{1}} & \textcolor{red}{\texttt{yes}} & \textcolor{blue}{\sqcup} & \texttt{\#} & \onslide<2-> \textcolor{blue}{\texttt{1}} & \onslide<3-> \textcolor{red}{\texttt{yes}} & \onslide<4-> \texttt{\#} & \onslide<5-> \textcolor{red}{\texttt{yes}} & \onslide<6-> \texttt{\#} \onslide<7-> & \textcolor{teal}{\texttt{\#}}
+            \end{matrix}\)
+        \end{center}
+        \end{itemize}
+    \end{example}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Indecidibilità di MPCP}
+    \begin{proof}
+        \begin{itemize}
+            \item (\(\Rightarrow\)) Se \(\mathnormal{M}\) accetta \(\mathnormal{w}\) allora è stato appena dimostrato che esiste una corrispondenza in \(\langle \mathnormal{T}_{\mathnormal{M,w}},\mathnormal{t}_{\mathnormal{M,w}}\rangle \).
+            \item (\(\Leftarrow\)) Se  \(\langle \mathnormal{T}_{\mathnormal{M,w}},\mathnormal{t}_{\mathnormal{M,w}}\rangle \in MPCP\) allora \(\mathnormal{M}\) accetta \(\mathnormal{w}\).
+            \begin{itemize}
+                \item Per costruzione, le uniche corrispondenze possibili in \(\langle \mathnormal{T}_{\mathnormal{M,w}},\mathnormal{t}_{\mathnormal{M,w}}\rangle\) corrispondono alla simulazione della computazione di \(\mathnormal{M}\) su \(\mathnormal{w}\).
+                \item Fissare \(\mathnormal{t_{\mathnormal{M,w}}}\) come prima tessera e definire le tessere di Tipo 2,3 in base a \(\delta\) rende vera tale proposizione.
+            \end{itemize}
+            \item Concludendo, se MPCP è decibibile allora \(Acc\) è decibibile.
+            \item  \textcolor{red}{Contraddizione}: \textbf{MPCP è indecidibile}.
+        \end{itemize}
+    \end{proof}
+\end{frame}
+
+%------------------------------------------------
+\section{Indecidibilità PCP}
+%------------------------------------------------
+
+\begin{frame}
+    \frametitle{Indecidibilità PCP}
+    \begin{theorem}
+        PCP è \emph{indecidibile}.
+    \end{theorem}
+    \begin{proofs}[Proof (Riduzione da MPCP)]
+        \begin{itemize} 
+            \item \textbf{Idea:} Data un'istanza \(\langle \mathnormal{T,t} \rangle\) si cerchi di decidere la sua appartenenza in MPCP decidendo \(\langle \mathnormal{T'} \rangle\) in PCP.
+            \item \textbf{Problema:} \`E necessario vincolare la tessera iniziale della corrispondenza in \(\mathnormal{T'}\).
+        \end{itemize}
+    \end{proofs}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Indecidibilità PCP}
+    \begin{proofs}
+    \begin{itemize}
+        \item Siano \(\mathnormal{T}\) e \(\mathnormal{t}\) della forma:
+        \begin{equation*}
+            \mathnormal{T=}
+            \begin{Bmatrix}
+                \begin{pmatrix}
+                    \mathnormal{s}\\
+                    \mathnormal{t}
+                \end{pmatrix},
+                \begin{pmatrix}
+                    \mathnormal{u_1}\\
+                    \mathnormal{v_1}
+                \end{pmatrix},
+                \begin{pmatrix}
+                    \mathnormal{u_2}\\
+                    \mathnormal{v_2}
+                \end{pmatrix}, \dots,
+                \begin{pmatrix}
+                    \mathnormal{u_n}\\
+                    \mathnormal{v_n}
+                \end{pmatrix}
+            \end{Bmatrix};
+            \mathnormal{t=}
+            \begin{pmatrix}
+                \mathnormal{s}\\
+                \mathnormal{t}
+            \end{pmatrix}
+        \end{equation*}
+    \end{itemize}
+        Si noti che \(\mathnormal(s,u_1,v_1,u_2,v_2,\dots)\) sono parole, non simboli.\\
+        Si costruisca un'istanza \(\mathnormal{T'}\) con alfabeto \(\Sigma \cup \{\heartsuit, \diamondsuit\}\) definendo le seguenti tessere:
+        \begin{itemize}
+            \item \textbf{Tipo 1:} Unica possibile tessera \textbf{iniziale}:
+            \begin{equation*}
+                \begin{pmatrix}
+                    \heartsuit & \mathnormal{s}\\
+                    \heartsuit & \mathnormal{t} & \heartsuit
+                \end{pmatrix}
+            \end{equation*}
+        
+    \end{itemize}
+\end{proofs}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Indecidibilità PCP}
+    \begin{proofs}
+    \begin{itemize}
+        
+        \item \textbf{Tipo 2:} Per ogni \(\mathnormal{i} \in \{1, ..., n\}\):
+        \begin{equation*}
+            \begin{pmatrix}
+                \heartsuit & \mathnormal{u_i}\\
+                \mathnormal{v_i} & \heartsuit
+            \end{pmatrix}
+            \text{ con anche }
+            \begin{pmatrix}
+                \heartsuit & \mathnormal{s}\\
+                \mathnormal{t} & \heartsuit
+            \end{pmatrix}
+        \end{equation*}
+        Dove \(\heartsuit\mathnormal{u_i} = \heartsuit \mathnormal{u_{i_1}} \heartsuit \mathnormal{u_{i_2}}\dots \heartsuit \mathnormal{u_{i_m}}.\)
+        
+        \item \textbf{Tipo 3:} Unica possibile tessera \textbf{finale}:
+        \begin{equation*}
+            \begin{pmatrix}
+                \heartsuit & \diamondsuit\\
+                \text{ } & \diamondsuit
+            \end{pmatrix}
+        \end{equation*}
+    \end{itemize}
+\end{proofs}
+\end{frame}
+
+\begin{frame}
+    \begin{proof}
+        (\(\Rightarrow\)) Data una corrispondenza
+        \(
+            \begin{pmatrix}
+                \mathnormal{s} & \mathnormal{u_i} & \dots & \mathnormal{u_k}\\
+                \mathnormal{t} & \mathnormal{v_i} & \dots & \mathnormal{v_k}
+            \end{pmatrix}
+        \) per \(\langle \mathnormal{T,t} \rangle\)\\
+        \`E possibile costruire una corrispondenza per \(\langle \mathnormal{T'} \rangle\)
+        \begin{equation*}
+            \begin{pmatrix}
+                \textcolor{red}{\heartsuit} & \textcolor{red}{\mathnormal{s}} & \textcolor{teal}{\heartsuit} & \textcolor{teal}{\mathnormal{u_i}} & \textcolor{orange}{\heartsuit} & \dots & \textcolor{teal}{\heartsuit} & \textcolor{teal}{\mathnormal{u_k}} & \textcolor{red}{\heartsuit} & \textcolor{red}{\diamondsuit}\\
+                \textcolor{red}{\heartsuit} & \textcolor{red}{\mathnormal{t}} & \textcolor{red}{\heartsuit} & \textcolor{teal}{\mathnormal{v_i}} & \textcolor{teal}{\heartsuit} & \dots & \textcolor{brown}{\heartsuit} & \textcolor{teal}{\mathnormal{v_k}} & \textcolor{teal}{\heartsuit} & \textcolor{red}{\diamondsuit}
+            \end{pmatrix}
+        \end{equation*}
+        (\(\Leftarrow\)) Data una corrispondenza per \(\langle \mathnormal{T'} \rangle\) è possibile ottenere una corrispondenza per \(\langle \mathnormal{T,t} \rangle\).
+        \begin{itemize}
+            \item Si rimuovano i simboli speciali \(\heartsuit\) e \(\diamondsuit\).
+        \end{itemize}
+        Concludendo, se PCP è decidibile allora MPCP è decidibile. MPCP è stato provato essere indecidibile, pertanto \textbf{PCP è indecidibile}.
+    \end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{References}
+\footnotesize{
+\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+\bibitem[Lynch, 2010]{p1} Nancy Lynch (2010)
+\newblock \href{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-045j-automata-computability-and-complexity-spring-2011/lecture-notes/MIT6_045JS11_lec08.pdf}{Automata, Computability, and Complexity Or, Great Ideas in Theoretical Computer Science}
+\newblock Class 8.
+\bibitem[Sipser, 1997]{p1} Michael Sipser (1997)
+\newblock Introduction To The Theory Of Computation
+\newblock Capitoli 4,5.
+\end{thebibliography}
+}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{Fine}}
+\centerline{Grazie dell'attenzione}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 
